@@ -10,6 +10,8 @@ import OrdersRepository from '@modules/orders/infra/typeorm/repositories/OrdersR
 import UsersRepository from '@modules/users/infra/typeorm/repositories/UsersRepository';
 import UserTokensRepository from '@modules/users/infra/typeorm/repositories/UserTokensRepository';
 
+import '@modules/users/providers';
+
 container.registerSingleton<ICustomersRepository>(
     'CustomersRepository',
     CustomersRepository,

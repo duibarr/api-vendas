@@ -1,15 +1,17 @@
 import AppError from '@shared/errors/AppError';
-import { hash } from 'bcryptjs';
-import { inject, injectable } from 'tsyringe/dist/typings/decorators';
+import { inject, injectable } from 'tsyringe';
 import { IUsersRepository } from '../domain/repositories/IUsersRepository';
 import { IUser } from '../domain/models/IUser';
 import { ICreateUser } from '../domain/models/ICreateUser';
+import { IHashProvider } from '../providers/HashProvider/models/IHashProvider';
 
 @injectable()
 class CreateUserService {
     constructor(
         @inject('UsersRepository')
         private usersRepository: IUsersRepository,
+        @inject('HashContainer')
+        private hashProvider: IHashProvider,
     ) {}
 
     public async execute({
@@ -23,9 +25,9 @@ class CreateUserService {
             throw new AppError('Email address already used.');
         }
 
-        const hashedPassword = await hash(password, 8);
+        const hashedPassword = await this.hashProvider.generateHash(password);
 
-        const user = this.usersRepository.create({
+        const user = await this.usersRepository.create({
             name,
             email,
             password: hashedPassword,

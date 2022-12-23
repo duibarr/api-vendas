@@ -1,64 +1,60 @@
 import { ICreateCustomer } from '@modules/customers/domain/models/ICreateCustomer';
 import { ICustomersRepository } from '@modules/customers/domain/repositories/ICustomersRepository';
-import { getRepository, Repository } from 'typeorm';
-import Customer from '../entities/Customer';
+import Customer from '@modules/customers/infra/typeorm/entities/Customer';
+import { v4 as uuidv4 } from 'uuid';
 
 class CustomersRepository implements ICustomersRepository {
-    private ormRepository: Repository<Customer>;
-
-    constructor() {
-        this.ormRepository = getRepository(Customer);
-    }
+    private customers: Customer[] = [];
 
     public async create({ name, email }: ICreateCustomer): Promise<Customer> {
-        const customer = this.ormRepository.create({ name, email });
+        const customer = new Customer();
 
-        await this.ormRepository.save(customer);
+        customer.id = uuidv4();
+        customer.name = name;
+        customer.email = email;
+
+        this.customers.push(customer);
 
         return customer;
     }
 
     public async save(customer: Customer): Promise<Customer> {
-        await this.ormRepository.save(customer);
+        const findIndex = this.customers.findIndex(findCustomer => {
+            findCustomer.id === customer.id;
+        });
+
+        this.customers[findIndex] = customer;
 
         return customer;
     }
 
     public async remove(customer: Customer): Promise<void> {
-        await this.ormRepository.remove(customer);
+        // do anything
+        () => customer;
     }
 
     public async find(): Promise<Customer[] | undefined> {
-        const customer = await this.ormRepository.find();
-
-        return customer;
+        return undefined;
     }
+
     public async findByName(name: string): Promise<Customer | undefined> {
-        const customer = await this.ormRepository.findOne({
-            where: {
-                name,
-            },
-        });
+        const customer = this.customers.find(
+            customer => customer.name === name,
+        );
 
         return customer;
     }
 
     public async findById(id: string): Promise<Customer | undefined> {
-        const customer = await this.ormRepository.findOne({
-            where: {
-                id,
-            },
-        });
+        const customer = this.customers.find(customer => customer.id === id);
 
         return customer;
     }
 
     public async findByEmail(email: string): Promise<Customer | undefined> {
-        const customer = await this.ormRepository.findOne({
-            where: {
-                email,
-            },
-        });
+        const customer = this.customers.find(
+            customer => customer.email === email,
+        );
 
         return customer;
     }
