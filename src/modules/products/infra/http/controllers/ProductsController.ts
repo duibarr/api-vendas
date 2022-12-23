@@ -12,9 +12,11 @@ export default class ProductsController {
         request: Request,
         response: Response,
     ): Promise<Response> {
-        const listProducts = container.resolve(ListProductService);
+        const page = request.query.page ? Number(request.query.page) : 1;
+        const limit = request.query.limit ? Number(request.query.limit) : 15;
 
-        const products = await listProducts.execute();
+        const listProducts = container.resolve(ListProductService);
+        const products = await listProducts.execute({ limit, page });
 
         return response.json(products);
     }

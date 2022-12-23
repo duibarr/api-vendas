@@ -2,6 +2,7 @@ import User from '@modules/users/infra/typeorm/entities/User';
 import { v4 as uuidv4 } from 'uuid';
 import { ICreateUser } from '../../models/ICreateUser';
 import { IUser } from '../../models/IUser';
+import { IUserPaginate } from '../../models/IUserPaginate';
 import { IUsersRepository } from '../IUsersRepository';
 
 export class FakeUsersRepository implements IUsersRepository {
@@ -24,40 +25,40 @@ export class FakeUsersRepository implements IUsersRepository {
         return user;
     }
 
-    public async save(User: IUser): Promise<IUser> {
+    public async save(user: IUser): Promise<IUser> {
         const findIndex = this.users.findIndex(findUser => {
-            findUser.id === User.id;
+            findUser.id === user.id;
         });
 
-        this.users[findIndex] = User;
+        this.users[findIndex] = user;
 
-        return User;
+        return user;
     }
 
-    public async remove(User: IUser): Promise<void> {
+    public async remove(user: IUser): Promise<void> {
         // do anything
-        () => User;
+        () => user;
     }
 
-    public async find(): Promise<IUser[] | undefined> {
-        return undefined;
+    public async findAll(): Promise<IUserPaginate> {
+        return {} as IUserPaginate;
     }
 
-    public async findByName(name: string): Promise<IUser | undefined> {
-        const user = this.users.find(User => User.name === name);
+    public async findByName(name: string): Promise<IUser | null> {
+        const user = this.users.find(user => user.name === name);
 
-        return user;
+        return user || null;
     }
 
-    public async findById(id: string): Promise<IUser | undefined> {
-        const user = this.users.find(User => User.id === id);
+    public async findById(id: string): Promise<IUser | null> {
+        const user = this.users.find(user => user.id === id);
 
-        return user;
+        return user || null;
     }
 
-    public async findByEmail(email: string): Promise<IUser | undefined> {
-        const user = this.users.find(User => User.email === email);
+    public async findByEmail(email: string): Promise<IUser | null> {
+        const user = this.users.find(user => user.email === email);
 
-        return user;
+        return user || null;
     }
 }

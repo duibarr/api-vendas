@@ -1,13 +1,14 @@
 import Order from '../entities/Order';
 import { ICreateOrderRepository } from '@modules/orders/domain/models/ICreateOrderRepository';
 import { IOrdersRepository } from '@modules/orders/domain/repositories/IOrdersRepository';
-import { getRepository, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+import { dataSource } from '@shared/infra/typeorm';
 
 class OrdersRepository implements IOrdersRepository {
     private ormRepository: Repository<Order>;
 
     constructor() {
-        this.ormRepository = getRepository(Order);
+        this.ormRepository = dataSource.getRepository(Order);
     }
 
     public async save(order: Order): Promise<Order> {
@@ -16,8 +17,9 @@ class OrdersRepository implements IOrdersRepository {
         return order;
     }
 
-    public async findById(id: string): Promise<Order | undefined> {
-        const order = this.ormRepository.findOne(id, {
+    public async findById(id: string): Promise<Order | null> {
+        const order = await this.ormRepository.findOne({
+            where: id,
             relations: ['order_products', 'customer'],
         });
 

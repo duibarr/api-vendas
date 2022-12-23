@@ -1,11 +1,18 @@
 import { ICreateUser } from '../models/ICreateUser';
 import { IUser } from '../models/IUser';
+import { IUserPaginate } from '../models/IUserPaginate';
+
+export type SearchParams = {
+    page: number;
+    skip: number;
+    take: number;
+};
 
 export interface IUsersRepository {
-    findByName(name: string): Promise<IUser | undefined>;
-    findById(id: string): Promise<IUser | undefined>;
-    findByEmail(email: string): Promise<IUser | undefined>;
+    findByName(name: string): Promise<IUser | null>;
+    findById(id: string): Promise<IUser | null>;
+    findByEmail(email: string): Promise<IUser | null>;
     save(user: IUser): Promise<IUser>;
     create(user: ICreateUser): Promise<IUser>;
-    find(): Promise<IUser[] | undefined>;
+    findAll(params: SearchParams): Promise<IUserPaginate>;
 }

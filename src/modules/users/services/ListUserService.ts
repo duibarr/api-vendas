@@ -1,6 +1,11 @@
 import { inject, injectable } from 'tsyringe/dist/typings/decorators';
 import { IUsersRepository } from '../domain/repositories/IUsersRepository';
-import { IUser } from '../domain/models/IUser';
+import { IUserPaginate } from '../domain/models/IUserPaginate';
+
+interface SearchParams {
+    page: number;
+    limit: number;
+}
 
 @injectable()
 class ListUserService {
@@ -9,8 +14,18 @@ class ListUserService {
         private usersRepository: IUsersRepository,
     ) {}
 
-    public async execute(): Promise<IUser[]> {
-        const users = this.usersRepository.find();
+    public async execute({
+        limit,
+        page,
+    }: SearchParams): Promise<IUserPaginate> {
+        const take = limit;
+        const skip = (Number(page) - 1) * take;
+
+        const users = await this.usersRepository.findAll({
+            page,
+            skip,
+            take,
+        });
 
         return users;
     }

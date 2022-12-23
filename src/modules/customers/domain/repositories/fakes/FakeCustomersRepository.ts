@@ -2,6 +2,7 @@ import { ICreateCustomer } from '@modules/customers/domain/models/ICreateCustome
 import { ICustomersRepository } from '@modules/customers/domain/repositories/ICustomersRepository';
 import Customer from '@modules/customers/infra/typeorm/entities/Customer';
 import { v4 as uuidv4 } from 'uuid';
+import { ICustomerPaginate } from '../../models/ICustomerPaginate';
 
 class CustomersRepository implements ICustomersRepository {
     private customers: Customer[] = [];
@@ -33,30 +34,35 @@ class CustomersRepository implements ICustomersRepository {
         () => customer;
     }
 
-    public async find(): Promise<Customer[] | undefined> {
-        return undefined;
+    public async findAll(): Promise<ICustomerPaginate> {
+        return {
+            current_page: 0,
+            total: 0,
+            per_page: 0,
+            data: {} as Customer[],
+        };
     }
 
-    public async findByName(name: string): Promise<Customer | undefined> {
+    public async findByName(name: string): Promise<Customer | null> {
         const customer = this.customers.find(
             customer => customer.name === name,
         );
 
-        return customer;
+        return customer || null;
     }
 
-    public async findById(id: string): Promise<Customer | undefined> {
+    public async findById(id: string): Promise<Customer | null> {
         const customer = this.customers.find(customer => customer.id === id);
 
-        return customer;
+        return customer || null;
     }
 
-    public async findByEmail(email: string): Promise<Customer | undefined> {
+    public async findByEmail(email: string): Promise<Customer | null> {
         const customer = this.customers.find(
             customer => customer.email === email,
         );
 
-        return customer;
+        return customer || null;
     }
 }
 
