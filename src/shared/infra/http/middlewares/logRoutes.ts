@@ -9,7 +9,7 @@ export function logRoutes(
     const currentDate = new Date();
     const dateFormatted = currentDate.toLocaleString('pt-BR');
 
-    const route = `[${method.toUpperCase()}] to ${url} from IP ${ip} at ${dateFormatted} UTC -3`;
+    const route = `[${method.toUpperCase()}] to ${url} from IP ${ip} at ${dateFormatted} (UTC -3)`;
 
     console.log(route);
 

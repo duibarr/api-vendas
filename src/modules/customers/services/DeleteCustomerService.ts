@@ -1,4 +1,5 @@
 import AppError from '@shared/errors/AppError';
+import { ERROR_MESSAGES } from '@shared/errors/errorMessages';
 import { inject, injectable } from 'tsyringe';
 import { ICustomersRepository } from '../domain/repositories/ICustomersRepository';
 
@@ -10,10 +11,12 @@ class DeleteCustomerService {
     ) {}
 
     public async execute(id: string): Promise<void> {
+        const { CUSTOMER } = ERROR_MESSAGES;
+
         const customer = await this.customerRepository.findById(id);
 
         if (!customer) {
-            throw new AppError('Customer not found.');
+            throw new AppError(CUSTOMER.NOT_FOUND);
         }
 
         await this.customerRepository.remove(customer);

@@ -6,6 +6,7 @@ import mailConfig from '@config/mail/mail';
 import { inject, injectable } from 'tsyringe/dist/typings/decorators';
 import { IUserTokensRepository } from '../domain/repositories/IUserTokensRepository';
 import { IUsersRepository } from '../domain/repositories/IUsersRepository';
+import { ERROR_MESSAGES } from '@shared/errors/errorMessages';
 
 @injectable()
 class SendForgotPasswordEmailService {
@@ -17,10 +18,12 @@ class SendForgotPasswordEmailService {
     ) {}
 
     public async execute(email: string): Promise<void> {
+        const { USERS } = ERROR_MESSAGES;
+
         const user = await this.usersRepository.findByEmail(email);
 
         if (!user) {
-            throw new AppError('User does not exists.');
+            throw new AppError(USERS.USER_NOT_FOUND);
         }
 
         const { token } = await this.userTokensRepository.generate(user.id);

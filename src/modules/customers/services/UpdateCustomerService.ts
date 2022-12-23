@@ -1,4 +1,5 @@
 import AppError from '@shared/errors/AppError';
+import { ERROR_MESSAGES } from '@shared/errors/errorMessages';
 import { inject, injectable } from 'tsyringe';
 import { ICustomer } from '../domain/models/ICustomer';
 import { IUpdateCustomer } from '../domain/models/IUpdateCustomer';
@@ -16,18 +17,18 @@ class UpdateCustomerService {
         name,
         email,
     }: IUpdateCustomer): Promise<ICustomer> {
+        const { CUSTOMER } = ERROR_MESSAGES;
+
         const customer = await this.customerRepository.findById(id);
 
         if (!customer) {
-            throw new AppError('Customer not found.');
+            throw new AppError(CUSTOMER.NOT_FOUND);
         }
 
         const customerExists = await this.customerRepository.findByEmail(email);
 
         if (customerExists && email !== customer.email) {
-            throw new AppError(
-                'There is already one customer with this email.',
-            );
+            throw new AppError(CUSTOMER.EMAIL_ALREADY_IN_USE);
         }
 
         customer.name = name;

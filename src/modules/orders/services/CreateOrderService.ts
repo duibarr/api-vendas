@@ -5,6 +5,7 @@ import Order from '../infra/typeorm/entities/Order';
 import { inject, injectable } from 'tsyringe/dist/typings/decorators';
 import { ICustomersRepository } from '@modules/customers/domain/repositories/ICustomersRepository';
 import { IProductsRepository } from '@modules/products/domain/repositories/IProductsRepository';
+import { ERROR_MESSAGES } from '@shared/errors/errorMessages';
 
 @injectable()
 class CreateOrderService {
@@ -21,14 +22,14 @@ class CreateOrderService {
         customer_id,
         products,
     }: ICreateOrderService): Promise<Order> {
+        const { ORDERS } = ERROR_MESSAGES;
+
         const customerExists = await this.customersRepository.findById(
             customer_id,
         );
 
         if (!customerExists) {
-            throw new AppError(
-                'Could not find any customer with the given id.',
-            );
+            throw new AppError(ORDERS.CUSTOMER_NOT_FOUND);
         }
 
         const existsProducts = await this.productsRepository.findAllByIds(
@@ -36,9 +37,7 @@ class CreateOrderService {
         );
 
         if (!existsProducts.length) {
-            throw new AppError(
-                'Could not find any products with the given ids.',
-            );
+            throw new AppError(ORDERS.PRODUCT_NOT_FOUND);
         }
 
         const existsProductsIds = existsProducts.map(product => product.id);
@@ -49,7 +48,7 @@ class CreateOrderService {
 
         if (checkInexistentProducts.length) {
             throw new AppError(
-                `Could not find product ${checkInexistentProducts[0].id}.`,
+                ORDERS.INEXISTENT_PRODUCT(checkInexistentProducts[0].id),
             );
         }
 
@@ -60,9 +59,13 @@ class CreateOrderService {
         );
 
         if (quantityAvailable.length) {
+            const { id, quantity } = quantityAvailable[0];
+
             throw new AppError(
-                `The quantity ${quantityAvailable[0].quantity}
-         is not available for ${quantityAvailable[0].id}.`,
+                ORDERS.UNAVAILABLE_QUANTITY_PRODUCT({
+                    id,
+                    quantity,
+                }),
             );
         }
 

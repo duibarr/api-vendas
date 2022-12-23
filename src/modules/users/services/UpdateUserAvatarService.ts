@@ -6,6 +6,7 @@ import { inject, injectable } from 'tsyringe/dist/typings/decorators';
 import { IUsersRepository } from '../domain/repositories/IUsersRepository';
 import { IUser } from '../domain/models/IUser';
 import { IUpdateUserAvatar } from '../domain/models/IUpdateUserAvatar';
+import { ERROR_MESSAGES } from '@shared/errors/errorMessages';
 
 @injectable()
 class UpdateUserAvatarService {
@@ -18,10 +19,12 @@ class UpdateUserAvatarService {
         user_id,
         avatarFilename,
     }: IUpdateUserAvatar): Promise<IUser> {
+        const { USERS } = ERROR_MESSAGES;
+
         const user = await this.usersRepository.findById(user_id);
 
         if (!user) {
-            throw new AppError('User not found.');
+            throw new AppError(USERS.USER_NOT_FOUND);
         }
 
         if (uploadConfig.driver === 's3') {

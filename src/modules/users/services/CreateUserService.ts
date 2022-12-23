@@ -4,6 +4,7 @@ import { IUsersRepository } from '../domain/repositories/IUsersRepository';
 import { IUser } from '../domain/models/IUser';
 import { ICreateUser } from '../domain/models/ICreateUser';
 import { IHashProvider } from '../providers/HashProvider/models/IHashProvider';
+import { ERROR_MESSAGES } from '@shared/errors/errorMessages';
 
 @injectable()
 class CreateUserService {
@@ -19,10 +20,12 @@ class CreateUserService {
         email,
         password,
     }: ICreateUser): Promise<IUser> {
+        const { USERS } = ERROR_MESSAGES;
+
         const emailExists = await this.usersRepository.findByEmail(email);
 
         if (emailExists) {
-            throw new AppError('Email address already used.');
+            throw new AppError(USERS.EMAIL_ALREADY_IN_USE);
         }
 
         const hashedPassword = await this.hashProvider.generateHash(password);

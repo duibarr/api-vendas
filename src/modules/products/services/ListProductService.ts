@@ -1,7 +1,6 @@
 import redisCache from '@shared/cache/RedisCache';
 import { inject, injectable } from 'tsyringe/dist/typings/decorators';
 import { IProductsRepository } from '../domain/repositories/IProductsRepository';
-import AppError from '@shared/errors/AppError';
 import { IProductPaginate } from '../domain/models/IProductPaginate';
 
 interface SearchParams {
@@ -35,10 +34,6 @@ class ListProductService {
             });
 
             await redisCache.save('api-vendas-PRODUCT_LIST', products);
-        }
-
-        if (!products) {
-            throw new AppError('There are no products.', 404);
         }
 
         return products;
