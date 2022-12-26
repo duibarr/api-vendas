@@ -1,5 +1,5 @@
 import AppError from '@shared/errors/AppError';
-import { inject, injectable } from 'tsyringe/dist/typings/decorators';
+import { inject, injectable } from 'tsyringe';
 import { IProductsRepository } from '../domain/repositories/IProductsRepository';
 import { IProduct } from '../domain/models/IProduct';
 import { ERROR_MESSAGES } from '@shared/errors/errorMessages';

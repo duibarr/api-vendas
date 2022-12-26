@@ -1,9 +1,8 @@
-import redisCache from '@shared/cache/RedisCache';
 import AppError from '@shared/errors/AppError';
 import { IProduct } from '../domain/models/IProduct';
 import { IUpdateProduct } from '../domain/models/IUpdateProduct';
 import { IProductsRepository } from '../domain/repositories/IProductsRepository';
-import { inject, injectable } from 'tsyringe/dist/typings/decorators';
+import { inject, injectable } from 'tsyringe';
 import { ERROR_MESSAGES } from '@shared/errors/errorMessages';
 
 @injectable()
@@ -32,8 +31,6 @@ class UpdateProductService {
         if (productExists) {
             throw new AppError(PRODUCTS.NAME_ALREADY_IN_USE);
         }
-
-        await redisCache.invalidate('api-vendas-PRODUCT_LIST');
 
         product.name = name;
         product.price = price;

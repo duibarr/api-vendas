@@ -1,7 +1,7 @@
 import Order from '../entities/Order';
 import { ICreateOrderRepository } from '@modules/orders/domain/models/ICreateOrderRepository';
 import { IOrdersRepository } from '@modules/orders/domain/repositories/IOrdersRepository';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { dataSource } from '@shared/infra/typeorm';
 
 class OrdersRepository implements IOrdersRepository {
@@ -19,7 +19,7 @@ class OrdersRepository implements IOrdersRepository {
 
     public async findById(id: string): Promise<Order | null> {
         const order = await this.ormRepository.findOne({
-            where: id,
+            where: id as FindOptionsWhere<Order>,
             relations: ['order_products', 'customer'],
         });
 

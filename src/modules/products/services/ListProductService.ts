@@ -1,5 +1,4 @@
-import redisCache from '@shared/cache/RedisCache';
-import { inject, injectable } from 'tsyringe/dist/typings/decorators';
+import { inject, injectable } from 'tsyringe';
 import { IProductsRepository } from '../domain/repositories/IProductsRepository';
 import { IProductPaginate } from '../domain/models/IProductPaginate';
 
@@ -19,22 +18,14 @@ class ListProductService {
         limit,
         page,
     }: SearchParams): Promise<IProductPaginate> {
-        let products = await redisCache.recover<IProductPaginate>(
-            'api-vendas-PRODUCT_LIST',
-        );
+        const take = limit;
+        const skip = (Number(page) - 1) * take;
 
-        if (!products) {
-            const take = limit;
-            const skip = (Number(page) - 1) * take;
-
-            products = await this.productsRepository.findAll({
-                page,
-                skip,
-                take,
-            });
-
-            await redisCache.save('api-vendas-PRODUCT_LIST', products);
-        }
+        const products = await this.productsRepository.findAll({
+            page,
+            skip,
+            take,
+        });
 
         return products;
     }

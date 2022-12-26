@@ -1,7 +1,6 @@
-import redisCache from '@shared/cache/RedisCache';
 import AppError from '@shared/errors/AppError';
 import { ICreateProduct } from '../domain/models/ICreateProduct';
-import { inject, injectable } from 'tsyringe/dist/typings/decorators';
+import { inject, injectable } from 'tsyringe';
 import { IProductsRepository } from '../domain/repositories/IProductsRepository';
 import { IProduct } from '../domain/models/IProduct';
 import { ERROR_MESSAGES } from '@shared/errors/errorMessages';
@@ -31,8 +30,6 @@ class CreateProductService {
             price,
             quantity,
         });
-
-        await redisCache.invalidate('api-vendas-PRODUCT_LIST');
 
         await this.productsRepository.save(product);
 

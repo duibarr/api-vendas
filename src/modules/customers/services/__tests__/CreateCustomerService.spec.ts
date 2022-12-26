@@ -3,13 +3,15 @@ import CreateCustomerService from '../../../customers/services/CreateCustomerSer
 import AppError from '@shared/errors/AppError';
 import FakeCustomersRepository from '../../../customers/domain/repositories/fakes/FakeCustomersRepository';
 
-let fakeUserRepository: FakeCustomersRepository;
+let fakeCustomerRepository: FakeCustomersRepository;
 let createCustomerService: CreateCustomerService;
 
 describe('CreateCustomer', () => {
     beforeEach(() => {
-        fakeUserRepository = new FakeCustomersRepository();
-        createCustomerService = new CreateCustomerService(fakeUserRepository);
+        fakeCustomerRepository = new FakeCustomersRepository();
+        createCustomerService = new CreateCustomerService(
+            fakeCustomerRepository,
+        );
     });
 
     it('should be able to create a new customer', async () => {

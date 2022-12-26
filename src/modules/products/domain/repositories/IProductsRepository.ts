@@ -16,6 +16,6 @@ export interface IProductsRepository {
     findAllByIds(products: IFindProducts[]): Promise<IProduct[]>;
     save(product: ISaveProduct): Promise<IProduct>;
     create(product: ICreateProduct): Promise<IProduct>;
-    remove(product: IProduct): Promise<IProduct>;
+    remove(product: IProduct): Promise<void>;
     findOne(id: string): Promise<IProduct | null>;
 }

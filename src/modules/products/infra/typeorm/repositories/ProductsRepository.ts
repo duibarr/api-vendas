@@ -56,10 +56,8 @@ class ProductRepository implements IProductsRepository {
         return existentProducts;
     }
 
-    public async remove(product: Product): Promise<Product> {
+    public async remove(product: Product): Promise<void> {
         await this.ormRepository.remove(product);
-
-        return product;
     }
 
     public async findAll({
@@ -67,10 +65,7 @@ class ProductRepository implements IProductsRepository {
         skip,
         take,
     }: SearchParams): Promise<IProductPaginate> {
-        const [
-            products,
-            count,
-        ] = await this.ormRepository
+        const [products, count] = await this.ormRepository
             .createQueryBuilder()
             .skip(skip)
             .take(take)

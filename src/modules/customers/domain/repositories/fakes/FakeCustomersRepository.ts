@@ -1,5 +1,8 @@
 import { ICreateCustomer } from '@modules/customers/domain/models/ICreateCustomer';
-import { ICustomersRepository } from '@modules/customers/domain/repositories/ICustomersRepository';
+import {
+    ICustomersRepository,
+    SearchParams,
+} from '@modules/customers/domain/repositories/ICustomersRepository';
 import Customer from '@modules/customers/infra/typeorm/entities/Customer';
 import { v4 as uuidv4 } from 'uuid';
 import { ICustomerPaginate } from '../../models/ICustomerPaginate';
@@ -30,16 +33,23 @@ class CustomersRepository implements ICustomersRepository {
     }
 
     public async remove(customer: Customer): Promise<void> {
-        // do anything
-        () => customer;
+        const indexOfCustomer = this.customers.findIndex(
+            c => c.id === customer.id,
+        );
+
+        this.customers.splice(indexOfCustomer, 1);
     }
 
-    public async findAll(): Promise<ICustomerPaginate> {
+    public async findAll({
+        page,
+        skip,
+        take,
+    }: SearchParams): Promise<ICustomerPaginate> {
         return {
-            current_page: 0,
-            total: 0,
-            per_page: 0,
-            data: {} as Customer[],
+            current_page: page,
+            total: this.customers.length,
+            per_page: take,
+            data: this.customers,
         };
     }
 

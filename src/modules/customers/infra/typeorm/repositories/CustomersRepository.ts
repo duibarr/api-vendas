@@ -38,10 +38,7 @@ class CustomersRepository implements ICustomersRepository {
         skip,
         take,
     }: SearchParams): Promise<ICustomerPaginate> {
-        const [
-            customers,
-            count,
-        ] = await this.ormRepository
+        const [customers, count] = await this.ormRepository
             .createQueryBuilder()
             .skip(skip)
             .take(take)
